@@ -1011,7 +1011,12 @@ leave point at previous location."
       (kill-buffer rpm-buffer-name))
   (create-file-buffer rpm-buffer-name)
   (display-buffer rpm-buffer-name)
-  (setq buildoptions (list buildoptions buffer-file-name))
+  (defun remote->local (file)
+    "Convert the possibly remote FILE name into a local name."
+    (let* ((remote-file (expand-file-name file))
+	   (remote-prefix (file-remote-p remote-file)))
+      (replace-regexp-in-string (concat "^" remote-prefix) "" remote-file)))
+  (setq buildoptions (list buildoptions (remote->local buffer-file-name)))
   (if (or rpm-spec-short-circuit rpm-spec-nobuild)
       (setq rpm-no-gpg t))
   (if rpm-spec-rmsource
@@ -1041,7 +1046,7 @@ leave point at previous location."
 
   (if rpm-spec-auto-topdir
       (if (string-match ".*/SPECS/$" default-directory)
-	  (let ((topdir (expand-file-name default-directory)))
+	  (let ((topdir (remote->local default-directory)))
 	    (setq buildoptions
 		  (cons
 		   (concat "--define \"_topdir " 
