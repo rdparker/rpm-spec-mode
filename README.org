@@ -1,5 +1,4 @@
 rpm-spec-mode.el --- RPM spec file editing commands for Emacs/XEmacs
-====================================================================
 
 This is an updated version of rpm-spec-mode.el with TRAMP support
 added.
